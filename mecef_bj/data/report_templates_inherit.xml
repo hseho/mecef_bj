@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="external_layout_boxed_inherit" inherit_id="web.external_layout_boxed">
+                <xpath expr="//div[1]" position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+         
+                <div class="o_boxed_header col-9">
+              
+                  <div class="row mb8">
+                  
+                    <div class="float-left col-2">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-left" alt="Logo"/>
+                    </div>
+
+                    <div class="col-7" id="company_address">
+
+                        <div>
+                            <strong t-field="company.partner_id.name" style="font-weight:800; color:MidnightBlue;font-size:18px"/>
+                        </div>
+                         <div style="font-weight:700;color:MidnightBlue;font-size:15px">
+                            <strong t-field="company.partner_id.company_registry"/>
+                        </div>
+                        <!-- <div t-if="company.partner_id.vat">-->
+                        <!--<t t-esc="company.country_id.vat_label or 'IFU'"/>:-->
+                        <!--<span t-field="company.partner_id.vat"/>-->
+                        <!--</div>-->
+                        <!-- <div t-if="company.partner_id.zip">-->
+                        <!--<span t-field="company.partner_id.zip"/>-->
+                        <!--</div>-->
+                         <div t-if="company.partner_id.street" style="font-weight:700;color:MidnightBlue;font-size:15px">
+                        <span t-field="company.partner_id.street"/>,
+                        <span t-field="company.partner_id.city"/>
+                        </div>
+
+                        <div t-if="company.partner_id.country_id" style="font-weight:600;color:MidnightBlue;font-size:15px">
+                           <strong t-field="company.partner_id.country_id"/>
+                        </div>
+                        </div>
+
+                    </div>
+                    <div class="clearfix mb8"/>
+                </div>
+            </div>
+
+        </xpath>
+
+        <xpath expr="//div/div[hasclass('text-center')]" position="replace">
+            <!--                    <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">-->
+            <div class="text-center" style="color:navy">
+             
+                <ul class="list-inline">
+                    <li t-if="company.partner_id.zip" class="list-inline-item">
+                        <i class="fa fa-envelope" role="img" aria-label="Zip" title="Zip"/>
+                        <span class="o_force_ltr" t-field="company.partner_id.zip"/>
+                    </li>
+                    <li t-if="company.partner_id.phone" class="list-inline-item">
+                        <i class="fa fa-phone" role="img" aria-label="Phone" title="Phone"/>
+                        <span class="o_force_ltr" t-field="company.partner_id.phone"/>
+                    </li>
+                     <li t-if="company.partner_id.mobile" class="list-inline-item">
+                        <i class="fa fa-phone" role="img" aria-label="Mobile" title="Mobile"/>
+                        <span class="o_force_ltr" t-field="company.partner_id.mobile"/>
+                    </li>
+                    <li t-if="company.partner_id.email" class="list-inline-item">
+                        <i class="fa fa-at" role="img" aria-label="Email" title="Email"/>
+                        <span t-field="company.partner_id.email"/>
+                    </li>
+                    <li t-if="company.partner_id.website" class="list-inline-item">
+                        <i class="fa fa-globe" role="img" aria-label="Website" title="Website"/>
+                        <span t-field="company.partner_id.website"/>
+                    </li>
+                    <li t-if="company.partner_id.vat" class="list-inline-item">
+                        <i class="fa fa-building-o" role="img" aria-label="Fiscal number"/>
+                        <t t-esc="company.country_id.vat_label or 'IFU'"/>:
+                        <span t-field="company.partner_id.vat"/>
+                    </li>
+                </ul>
+                </div>
+        </xpath>
+
+    </template>
+
+</odoo>

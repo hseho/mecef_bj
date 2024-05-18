@@ -1,0 +1,206 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* mecef_bj
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-08 07:50+0000\n"
+"PO-Revision-Date: 2022-12-08 07:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-at\" role=\"img\" aria-label=\"Email\" title=\"Email\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-building-o\" role=\"img\" aria-label=\"Fiscal number\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-envelope\" role=\"img\" aria-label=\"Zip\" title=\"Zip\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-globe\" role=\"img\" aria-label=\"Website\" title=\"Website\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-phone\" role=\"img\" aria-label=\"Mobile\" title=\"Mobile\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "<i class=\"fa fa-phone\" role=\"img\" aria-label=\"Phone\" title=\"Phone\"/>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid ""
+"<span groups=\"account.group_show_line_subtotals_tax_excluded\">Amount</span>\n"
+"                                        <span groups=\"account.group_show_line_subtotals_tax_included\">Total Price</span>"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<span>Description</span>"
+msgstr "<span>Description</span>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<span>Disc.%</span>"
+msgstr "<span>Rem.%</span>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<span>Quantity</span>"
+msgstr "<span>Quantité</span>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<span>Unit Price</span>"
+msgstr "<span>Price Unitaire</span>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr "<strong class=\"mr16\">Montant HT</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>Code MECeF/DGI</strong>"
+msgstr "<strong>Code MECeF/DGI</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>MECeF Compteurs:</strong>"
+msgstr "<strong>MECeF Compteurs:</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>MECeF Heure:</strong>"
+msgstr "<strong>MECeF Heure:</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>MECeF NIM:</strong>"
+msgstr "<strong>MECeF NIM:</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>MECeF Reference:</strong>"
+msgstr "<strong>Réference MECeF :</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>Nombre d'Articles:</strong>"
+msgstr "<strong>Nombre d'Articles:</strong>"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "<strong>Sale Person (Code):</strong>"
+msgstr "<strong>Vendeur (Code):</strong>"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_res_users__code
+msgid "Code"
+msgstr "Code"
+
+#. module: mecef_bj
+#: model:ir.model.constraint,message:mecef_bj.constraint_res_users_unique_code
+msgid "Code should be unique!"
+msgstr "Code doit être unique"
+
+#. module: mecef_bj
+#: model:ir.model,name:mecef_bj.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.external_layout_boxed_inherit
+msgid "Logo"
+msgstr ""
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_counters
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_counters
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_counters
+msgid "MECeF Counters"
+msgstr "MECeF Compteurs"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_date
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_date
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_date
+msgid "MECeF Date"
+msgstr "Date MECeF"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_nim
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_nim
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_nim
+msgid "MECeF NIM"
+msgstr "MECeF NIM"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_qrcode
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_qrcode
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_qrcode
+msgid "MECeF QR Code"
+msgstr ""
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_ref
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_ref
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_ref
+msgid "MECeF Reference"
+msgstr "MECeF Reférence"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_flag
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_flag
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_flag
+msgid "MECeF Status"
+msgstr ""
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_date_time
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_date_time
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_date_time
+msgid "MECeF Time"
+msgstr "MECeF Heure"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_code
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_code
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_code
+msgid "MECeF/DGI Code"
+msgstr "Code MECeF/DGI"
+
+#. module: mecef_bj
+#: model_terms:ir.ui.view,arch_db:mecef_bj.report_invoice_document_mecef
+msgid "N° IFU"
+msgstr "N° IFU"
+
+#. module: mecef_bj
+#: model:ir.model.fields,field_description:mecef_bj.field_account_bank_statement_line__emecef_product_count
+#: model:ir.model.fields,field_description:mecef_bj.field_account_move__emecef_product_count
+#: model:ir.model.fields,field_description:mecef_bj.field_account_payment__emecef_product_count
+msgid "Product Count"
+msgstr "Nombre d'Articles"
+
+#. module: mecef_bj
+#: model:ir.model,name:mecef_bj.model_res_users
+msgid "User"
+msgstr ""

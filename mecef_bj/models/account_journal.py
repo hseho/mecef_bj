@@ -19,6 +19,12 @@
 #
 ###############################################################################
 
-from . import account_move
-from . import res_users
-from . import account_journal
+from odoo import api, Command, fields, models, _
+
+
+class AccountJournal(models.Model):
+    _inherit = "account.journal"
+
+
+    code = fields.Char(string='Short Code', size=8, required=True, 
+    help="Shorter name used for display. The journal entries of this journal will also be named using this prefix by default.")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'e-MECeF BJ',
-    'version': '15.0.1.0',
+    'version': '17.0.1.0',
     'summary': 'Generate Standardized Customer Invoices from the e-MECeF Platform',
     'category': 'Accounting',
     'author': 'GLOBALNET',
@@ -11,7 +11,8 @@
     'price': 0,
     'currency': 'USD',
     'data': [
-        # 'security/ir.model.access.csv',
+        'data/report_paperformat.xml',
+        'data/report_templates_inherit.xml',
         'views/res_users_view.xml',
         'views/report_invoice.xml',
         'views/account_move_view.xml',
