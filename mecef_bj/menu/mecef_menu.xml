@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="account_invoicing_mecef_sub_menu"
+                  name="MECeF API"
+                  parent="account.account_invoicing_menu"
+                  action="act_mecef_api_settings_view"
+                  sequence="4"/>
+    </data>
+</odoo>

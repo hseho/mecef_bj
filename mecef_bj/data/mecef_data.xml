@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--        # Default API Settings ######-->
+        <record id="mecef_api_settings" model="mecef.api.settings">
+            <field name="name">e-MCF Settings</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+
+access_mecef_api_settings_system,name_mecef_api_settings_system,model_mecef_api_settings,base.group_system,1,1,1,1
+

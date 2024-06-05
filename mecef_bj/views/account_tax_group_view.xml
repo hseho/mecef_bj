@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_tax_group_tree_inherit">
+            <field name="name">account.tax.group.tree.inherit</field>
+            <field name="model">account.tax.group</field>
+            <field name="inherit_id" ref="account.view_tax_group_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Account Tax Group">
+                        <field name="sequence" widget="handle"/>
+                        <field name="name"/>
+                        <field name="tax_group_code"/>
+                        <field name="country_id"/>
+                        <field name="company_id" column_invisible="True"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="country_code" column_invisible="True"/>
+                        <field name="tax_payable_account_id" domain="[('company_id', '=', company_id)]"/>
+                        <field name="tax_receivable_account_id" domain="[('company_id', '=', company_id)]"/>
+                        <field name="advance_tax_payment_account_id" domain="[('company_id', '=', company_id)]"/>
+                        <field name="preceding_subtotal" optional="hide"/>
+                    </tree>
+                </tree>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tax_group_form_inherit">
+            <field name="name">account.tax.group.form.inherit</field>
+            <field name="model">account.tax.group</field>
+            <field name="inherit_id" ref="account.view_tax_group_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="tax_group_code"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

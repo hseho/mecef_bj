@@ -20,21 +20,33 @@
 ###############################################################################
 
 from odoo import api, fields, models, _
+import json
+import requests
 from datetime import datetime
+import qrcode
+import base64
+from io import BytesIO
+from odoo.exceptions import ValidationError
+
+
+class AccountTaxGroup(models.Model):
+    _inherit = 'account.tax.group'
+
+    tax_group_code = fields.Char(string=" Code", size=4)
 
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    emecef_code = fields.Char('MECeF/DGI Code', size=30, readonly=True, store=True)
-    emecef_counters = fields.Char('MECeF Counters', size=12, readonly=True, store=True)
-    emecef_date_time = fields.Char('MECeF Time', size=30, readonly=True, store=True)
-    emecef_date = fields.Date('MECeF Date', compute='_compute_emecef_date', store=True)
-    emecef_nim = fields.Char('MECeF NIM', size=12, readonly=True, store=True)
-    emecef_product_count = fields.Char(string="Product Count", readonly=True, store=True)
-    emecef_qrcode = fields.Binary(string="MECeF QR Code", readonly=True, store=True)
-    emecef_flag = fields.Boolean('MECeF Status')
-    emecef_ref = fields.Char('MECeF Reference', readonly=True, store=True)
+    emecef_code = fields.Char('MECeF/DGI Code', size=30, readonly=True, copy=False)
+    emecef_counters = fields.Char('MECeF Counters', size=12, readonly=True, copy=False)
+    emecef_date_time = fields.Char('MECeF Time', size=30, readonly=True, copy=False)
+    emecef_date = fields.Date('MECeF Date', compute='_compute_emecef_date', copy=False)
+    emecef_nim = fields.Char('MECeF NIM', size=12, readonly=True, copy=False)
+    emecef_product_count = fields.Char(string="Product Count", readonly=True,  copy=False)
+    emecef_qrcode = fields.Binary(string="MECeF QR Code", readonly=True, copy=False)
+    emecef_flag = fields.Boolean('MECeF Status', copy=False)
+    emecef_ref = fields.Char('MECeF Reference', readonly=True, copy=False)
 
     @api.depends('emecef_date_time')
     def _compute_emecef_date(self):
@@ -46,3 +58,183 @@ class AccountMove(models.Model):
                 date_time_obj = (datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')).date()
                 record.emecef_date = date_time_obj
 
+    def _generate_qr_code(self, datastr: str):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=20,
+            border=4,
+        )
+        qr.add_data(datastr)
+        qr.make(fit=True)
+        img = qr.make_image()
+        temp = BytesIO()
+        img.save(temp, format="PNG")
+        qr_img = base64.b64encode(temp.getvalue())
+        return qr_img
+
+    # def _get_item_price_total(self, invoice_line, record, item_tax_type):
+    #     if item_tax_type != "SPEC" and tax_details["amount_type"] == "percent":
+    #         price_total = record["price_unit"] + (record["price_unit"] * (tax_details["amount"] / 100))
+    #     elif item_tax_type != "SPEC" and tax_details["amount_type"] == "fixed":
+    #         price_total = record["price_unit"] + tax_details["amount"]
+    #     else:
+    #         price_total = record["price_unit"]
+    #     if record["discount"] > 0:
+    #         return price_total * (record["discount"] / 100)
+    #     return price_total
+
+    def _get_out_refund_mecef_data(self):
+        for record in self:
+            if record.move_type == 'out_refund':
+                refund_invoice = record.reversed_entry_id
+                mecef_code = refund_invoice.emecef_code
+                nim = refund_invoice.emecef_nim
+                counters = refund_invoice.emecef_counters
+                # Step 1: Split counters in form of XXXX/XXXX FV by space and pick first item in list, then split by "/"
+                counters_split = (str(counters).split()[0]).split("/")
+                # Step 2: Split result of Step 1 in form of XXXX/XXXX and pick second item in list
+                counter = counters_split[1]
+                reference = str(nim) + "-" + str(counter)
+                return mecef_code, reference
+
+    def _prepare_invoice_data(self):
+        for record in self:
+            api = self.env.ref('mecef_bj.mecef_api_settings')
+            partner = record.partner_id
+            if record.partner_id.state_id:
+                partner_address = str(partner.street) + ', ' + str(partner.city) + ', ' + str(
+                    partner.state_id.name) + ', ' + str(partner.country_id.name)
+            else:
+                partner_address = str(partner.street) + ', ' + str(partner.city) + ', ' + str(partner.country_id.name)
+            items = []
+            for line in record.invoice_line_ids:
+                items.append({
+                    'name': line.name,
+                    'price': line.price_total / line.quantity,
+                    'quantity': line.quantity,
+                    'taxGroup': line.tax_ids[0].tax_group_id.tax_group_code,
+                })
+
+            invoice_data = {
+                'ifu': f"{api.company_ifu}",
+                'items': items,
+                'client': {
+                    'contact': str(record.partner_id.phone) or str(record.partner_id.mobile),
+                    'ifu': str(record.partner_id.vat),
+                    'name': str(record.partner_id.name),
+                    'address': partner_address,
+                },
+                'operator': {"id": str(record.user_id.id), "name": str(record.user_id.name)}
+            }
+
+            if record.move_type == 'out_invoice':
+                invoice_type = "FV"
+                invoice_data.update({'type': invoice_type})
+            if record.move_type == 'out_refund':
+                invoice_type = "FA"
+                invoice_data.update({'type': invoice_type, 'reference': self._get_out_refund_mecef_data()[0]})
+
+            return invoice_data
+
+    def action_post(self):
+
+        # Step 1: Exclude Invoices not in "out_invoice" and "out_refund" for this procedure ##
+
+        if self.move_type not in ['out_invoice', 'out_refund']:
+            return super(AccountMove, self).action_post()
+
+        else:  # Step 2: Check that API settings and status are ok before posting invoice
+
+            api = self.env.ref('mecef_bj.mecef_api_settings')
+
+            if all([
+                (api.state == 'enabled' and api.token_status == 'valid' or
+                 api.state == 'test' and api.token_status_test == 'valid')]):
+
+                rslt = super(AccountMove, self).action_post()
+
+                if not self.emecef_flag:  # Exclude invoice if it had been processed before
+
+                    # Step 3: Obtain Invoice Data #
+                    invoice_data = self._prepare_invoice_data()
+
+                    # Step 5: POST request to eMECeF API to obtain invoice uid.
+                    invoice_uid = self.validate_invoice(invoice_data)
+
+                    # Step 6: PUT a request to eMECeF API to get NIM, DGI_CODE, TC/TF, TIME and append on invoice
+                    self.confirm_invoice_validation(invoice_uid)
+
+                else:
+                    pass
+                return rslt
+            else:
+                error_msg = f"{api.invoice_msg_api_status_check}"
+                raise ValidationError(_('%s' % error_msg))
+
+    def _send_request(self, data: dict = None, uri: str = "", method: str = "GET"):
+
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+
+        authentication_token = False
+
+        if api.state == 'enabled':
+            api_url = f"{api.invoice_api_endpoint}"
+            authentication_token = f"{api.api_token}"
+        elif api.state == 'test':
+            api_url = f"{api.invoice_api_endpoint_test}"
+            authentication_token = f"{api.api_token_test}"
+
+        headers = {"Authorization": f"Bearer {authentication_token}", "Content-Type": "application/json"}
+        if method.upper() == "POST":
+            response = requests.post(
+                f"{api_url}/{uri}", headers=headers, data=json.dumps(data) if data is not None else None
+            )
+            return response.status_code, json.loads(response.content)
+        elif method.upper() == "PUT":
+            response = requests.put(
+                f"{api_url}/{uri}", headers=headers, data=json.dumps(data) if data is not None else None
+            )
+            return response.status_code, json.loads(response.content)
+
+    def validate_invoice(self, invoice: dict):
+        validation_response_code, validation_response_content = self._send_request(
+            data=invoice, method="POST"
+        )
+        if not validation_response_code == 200:
+            raise Exception(
+                f"Invoice validation failed -- Error: {validation_response_code} -- {validation_response_content}"
+            )
+        if not len(validation_response_content.get("uid")) > 0:
+            raise Exception(
+                f"Invoice validation failed -- Error: Empty 'uid' -- {validation_response_content}")
+        invoice_uid = validation_response_content['uid']
+
+        return invoice_uid
+
+    def confirm_invoice_validation(self, invoice_uid, action="confirm"):
+        # Finalize the invoice
+        confirmation_response_code, confirmation_response_content = self._send_request(
+            method="PUT", uri=f"{invoice_uid}/{action}"
+        )
+        if not confirmation_response_code == 200:
+            raise Exception(
+                f"Invoice confirmation failed -- Error: {confirmation_response_code} -- {confirmation_response_content}"
+            )
+        confirmationDate = confirmation_response_content.get("dateTime")
+        qrCode = confirmation_response_content.get("qrCode")
+        nim = confirmation_response_content.get("nim")
+        codeMECeFDGI = confirmation_response_content.get("codeMECeFDGI")
+        counters = confirmation_response_content.get("counters")
+        print(confirmation_response_content)
+        self.write({
+            "emecef_flag": True,
+            "emecef_nim": nim,
+            "emecef_counters": counters,
+            "emecef_code": codeMECeFDGI,
+            "emecef_date_time": confirmationDate,
+            "emecef_qrcode": self._generate_qr_code(qrCode),
+            "emecef_product_count": len(self.invoice_line_ids),
+            "emecef_ref": self._get_out_refund_mecef_data()[1] if self.reversed_entry_id else False
+        })
+        return True

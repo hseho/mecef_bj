@@ -99,7 +99,7 @@
                                             </td>
 
                                             <td name="td_subtotal" class="text-end o_price_total">
-                                                <span class="text-nowrap" t-field="line.price_subtotal">27.00</span>
+                                                <span class="text-nowrap" t-field="line.price_total">27.00</span>
                                             </td>
                                         </t>
                                         <t t-if="line.display_type == 'line_section'">
@@ -139,7 +139,7 @@
                             <div class="col-2 mw-100 mb-2" name="col-separator">
                                 <strong/>
                             </div>
-                            <div class="col-5 mw-100 mb-2 text-center">
+                            <div class="col-4 mw-100 mb-2 text-center">
                                 <strong>Code MECeF/DGI</strong>
                                 <p class="m-0" t-field="o.emecef_code"/>
                             </div>
@@ -151,10 +151,10 @@
                     <div id="mecef_nim">
                         <div class="row">
                           
-                            <div class="col-auto col-3 mw-100 mb-2 text-left">
+                            <div class="col-auto col-4 mw-100 mb-2 text-left">
                                 <strong>MECeF NIM:</strong>
                             </div>
-                            <div class="col-auto col-3 mw-100 mb-2" name="col-separator">
+                            <div class="col-auto col-4 mw-100 mb-2" name="col-separator">
                                 <strong/>
 
                             </div>
@@ -166,10 +166,10 @@
                     </div>
                     <div id="mecef_counter">
                         <div class="row">
-                            <div class="col-auto col-3 mw-100 mb-2 text-left">
+                            <div class="col-auto col-4 mw-100 mb-2 text-left">
                                 <strong>MECeF Compteurs:</strong>
                             </div>
-                            <div class="col-auto col-3 mw-100 mb-2" name="col-separator">
+                            <div class="col-auto col-4 mw-100 mb-2" name="col-separator">
                                 <strong/>
 
                             </div>
@@ -181,10 +181,10 @@
                     </div>
                     <div id="mecef_time">
                         <div class="row">
-                            <div class="col-auto col-3 mw-100 mb-2 text-left">
+                            <div class="col-auto col-4 mw-100 mb-2 text-left">
                                 <strong>MECeF Heure:</strong>
                             </div>
-                            <div class="col-auto col-3 mw-100 mb-2" name="col-separator">
+                            <div class="col-auto col-4 mw-100 mb-2" name="col-separator">
                                 <strong/>
 
                             </div>
@@ -195,10 +195,10 @@
                         </div>
                         <div id="mecef_p_count">
                             <div class="row">
-                                <div class="col-auto col-3 mw-100 mb-2 text-left">
+                                <div class="col-auto col-4 mw-100 mb-2 text-left">
                                     <strong>Nombre d'Articles:</strong>
                                 </div>
-                                <div class="col-auto col-3 mw-100 mb-2" name="col-separator">
+                                <div class="col-auto col-4 mw-100 mb-2" name="col-separator">
                                     <strong/>
 
                                 </div>

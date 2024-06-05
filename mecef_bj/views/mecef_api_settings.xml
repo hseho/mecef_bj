@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_mecef_api_settings_tree" model="ir.ui.view">
+            <field name="name">mecef.api.settings.tree</field>
+            <field name="model">mecef.api.settings</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Mecef API Endpoint" create="false">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="state" widget="badge" decoration-warning="state == 'test'"
+                           decoration-danger="state == 'disabled'" decoration-success="state == 'enabled'"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_mecef_api_settings_form" model="ir.ui.view">
+            <field name="name">mecef.api.settings.form</field>
+            <field name="model">mecef.api.settings</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Mecef API Endpoint" create="false">
+                    <header>
+                        <button name="action_test" invisible="state in ('test')" type="object" class="oe_highlight"
+                                string="Enable Testing"/>
+                        <button name="action_enable" invisible="state not in ('test')" type="object" class="oe_highlight"
+                                string="Go Live" />
+                        <button name="action_disable" invisible="state in ('disabled')" type="object"
+                                string="Disable"/>
+                        <field name="state" readonly="1" widget="statusbar"
+                               statusbar_visible="disable,test,enabled"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Disabled" bg_color="bg-danger"
+                                invisible="state != 'disabled'"/>
+                        <widget name="web_ribbon" title="Test Mode" bg_color="bg-warning"
+                                invisible="state != 'test'"/>
+                        <widget name="web_ribbon" title="Production Mode" bg_color="bg-success"
+                                invisible="state != 'enabled'"/>
+                        <div class="oe_title" style="color:#4863A0;font-weight:900; font-size:26px">
+                            <strong>
+                                <field name="name" force_save="1"/>
+                            </strong>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id" readonly="1"/>
+                                <field name="website"/>
+
+                            </group>
+                            <group>
+                                  <field name="company_ifu" readonly="1"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page name="api_settings" string="Settings"
+                                  style="background-color:white; font-weight:800">
+
+                                <group string='Production API'>
+                                    <group>
+                                        <field name="invoice_api_endpoint" required="state == 'enabled'"/>
+                                        <field name="information_api_endpoint" required="state == 'enabled'"/>
+                                        <field name="api_token"
+                                               required="state == 'enabled'"/>
+                                    </group>
+                                    <group>
+                                        <field name="nim_production"/>
+                                        <field name="api_token_expiry"/>
+                                        <field name="token_status" widget="badge"
+                                               decoration-danger="token_status == 'unauthorized'"
+                                               decoration-warning="token_status == 'expired'"
+                                               decoration-success="token_status == 'valid'"
+                                        />
+                                    </group>
+                                    <div colspan="2">
+                                        <a type="object" name="action_check_api_access" class="btn btn-link"
+                                           role="button">
+                                            <i class="oi oi-fw o_button_icon oi-arrow-right"/>
+                                            Check Authorization
+                                        </a>
+                                    </div>
+
+                                </group>
+
+                                <group string='Test API'>
+                                    <group>
+                                        <field name="invoice_api_endpoint_test" required="state == 'test'"/>
+                                        <field name="information_api_endpoint_test" required="state == 'test'"/>
+                                        <field name="api_token_test"
+                                               required="state == 'test'"/>
+                                    </group>
+                                    <group>
+                                        <field name="nim_test"/>
+                                        <field name="api_token_test_expiry"/>
+                                        <field name="token_status_test" widget="badge"
+                                               decoration-danger="token_status_test == 'unauthorized'"
+                                               decoration-warning="token_status_test == 'expired'"
+                                               decoration-success="token_status_test == 'valid'"
+                                        />
+                                    </group>
+
+                                    <div colspan="2">
+                                        <a type="object" name="action_check_test_api_access" class="btn btn-link"
+                                           role="button" >
+                                            <i class="oi oi-fw o_button_icon oi-arrow-right"/>
+                                            Check Authorization
+                                        </a>
+                                    </div>
+
+                                </group>
+
+                            </page>
+                             <page string="Messages" name="messages">
+                            <group>
+                                <field name="auth_msg_no_response" />
+                                <field name="auth_msg_token_incorrect"/>
+                                <field name="auth_msg_token_expired" />
+                                 <field name="invoice_msg_api_status_check" />
+                            </group>
+                        </page>
+                        </notebook>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_mecef_api_settings_search" model="ir.ui.view">
+            <field name="name">mecef.api.settings.search</field>
+            <field name="model">mecef.api.settings</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="MECeF API Endpoint">
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_mecef_api_settings_view">
+            <field name="name">MECeF API Endpoint</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mecef.api.settings</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_mecef_api_settings_search"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_mecef_api_settings_view_form">
+            <field name="act_window_id" ref="act_mecef_api_settings_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_mecef_api_settings_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_mecef_api_settings_view_form">
+            <field name="act_window_id" ref="act_mecef_api_settings_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_mecef_api_settings_tree"/>
+        </record>
+    </data>
+</odoo>
