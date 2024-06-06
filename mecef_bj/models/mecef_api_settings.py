@@ -76,7 +76,29 @@ class MECeFAPISettings(models.Model):
 
     invoice_msg_api_status_check = fields.Char(
         string="API Status Check", help="The message displayed if API is invalid status",
-        default=lambda self: _("Invoice cannot be processed now. \n\neMCF API is either not connected or not ready. Please contact the administrator!"), translate=True)
+        default=lambda self: _(
+            "Invoice cannot be processed now. \n\neMCF API is either not connected or not ready. Please contact the administrator!"),
+        translate=True)
+
+    def_tax_group_msg_constraint = fields.Char(
+        string="Default Tax Group Constraint",
+        help="The message displayed if when more than one default tax group is being set",
+        default=lambda self: _(
+            "Only ONE default tax group is allowed to be configured!"),
+        translate=True)
+
+    def_tax_group_msg_check = fields.Char(
+        string="Default Tax Group Check",
+        help="The message displayed during invoice processing if no default tax group is set",
+        default=lambda self: _(
+            "A default eMCF tax group must be configured but none is set at the moment.\nPlease contact the Account Manager!"),
+        translate=True)
+    invoice_line_tax_check = fields.Char(
+        string="Invoice Line Tax Check",
+        help="The message displayed during invoice processing if more than tax id is set on invoice line ",
+        default=lambda self: _(
+            "You cannot set more than one tax id on invoice line:\n"),
+        translate=True)
 
     def action_test(self):
         if self.token_status_test == 'unauthorized':

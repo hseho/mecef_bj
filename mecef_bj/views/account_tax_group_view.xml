@@ -10,7 +10,6 @@
                     <tree string="Account Tax Group">
                         <field name="sequence" widget="handle"/>
                         <field name="name"/>
-                        <field name="tax_group_code"/>
                         <field name="country_id"/>
                         <field name="company_id" column_invisible="True"/>
                         <field name="company_id" groups="base.group_multi_company"/>
@@ -18,6 +17,8 @@
                         <field name="tax_payable_account_id" domain="[('company_id', '=', company_id)]"/>
                         <field name="tax_receivable_account_id" domain="[('company_id', '=', company_id)]"/>
                         <field name="advance_tax_payment_account_id" domain="[('company_id', '=', company_id)]"/>
+                         <field name="emecef_tax_group"/>
+                        <field name="is_emecef_default_tax_group"/>
                         <field name="preceding_subtotal" optional="hide"/>
                     </tree>
                 </tree>
@@ -31,7 +32,10 @@
             <field name="inherit_id" ref="account.view_tax_group_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="tax_group_code"/>
+                    <field name="emecef_tax_group"/>
+                </field>
+                <field name="preceding_subtotal" position="after">
+                    <field name="is_emecef_default_tax_group"/>
                 </field>
             </field>
         </record>

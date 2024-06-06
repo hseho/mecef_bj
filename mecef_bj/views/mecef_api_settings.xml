@@ -23,8 +23,9 @@
                     <header>
                         <button name="action_test" invisible="state in ('test')" type="object" class="oe_highlight"
                                 string="Enable Testing"/>
-                        <button name="action_enable" invisible="state not in ('test')" type="object" class="oe_highlight"
-                                string="Go Live" />
+                        <button name="action_enable" invisible="state not in ('test')" type="object"
+                                class="oe_highlight"
+                                string="Go Live"/>
                         <button name="action_disable" invisible="state in ('disabled')" type="object"
                                 string="Disable"/>
                         <field name="state" readonly="1" widget="statusbar"
@@ -49,7 +50,7 @@
 
                             </group>
                             <group>
-                                  <field name="company_ifu" readonly="1"/>
+                                <field name="company_ifu" readonly="1"/>
                             </group>
 
                         </group>
@@ -59,10 +60,13 @@
 
                                 <group string='Production API'>
                                     <group>
-                                        <field name="invoice_api_endpoint" required="state == 'enabled'"/>
-                                        <field name="information_api_endpoint" required="state == 'enabled'"/>
+                                        <field name="invoice_api_endpoint" required="state == 'enabled'"
+                                        readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
+                                        <field name="information_api_endpoint" required="state == 'enabled'"
+                                         readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
                                         <field name="api_token"
-                                               required="state == 'enabled'"/>
+                                               required="state == 'enabled'"
+                                         readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
                                     </group>
                                     <group>
                                         <field name="nim_production"/>
@@ -85,10 +89,13 @@
 
                                 <group string='Test API'>
                                     <group>
-                                        <field name="invoice_api_endpoint_test" required="state == 'test'"/>
-                                        <field name="information_api_endpoint_test" required="state == 'test'"/>
+                                        <field name="invoice_api_endpoint_test" required="state == 'test'"
+                                               readonly="state in ('test', 'enabled') and token_status_test == 'valid'"/>
+                                        <field name="information_api_endpoint_test" required="state == 'test'"
+                                               readonly="state in ('test', 'enabled') and token_status_test == 'valid'"/>
                                         <field name="api_token_test"
-                                               required="state == 'test'"/>
+                                               required="state == 'test'"
+                                               readonly="state in ('test', 'enabled') and token_status_test == 'valid'"/>
                                     </group>
                                     <group>
                                         <field name="nim_test"/>
@@ -102,7 +109,7 @@
 
                                     <div colspan="2">
                                         <a type="object" name="action_check_test_api_access" class="btn btn-link"
-                                           role="button" >
+                                           role="button">
                                             <i class="oi oi-fw o_button_icon oi-arrow-right"/>
                                             Check Authorization
                                         </a>
@@ -111,14 +118,17 @@
                                 </group>
 
                             </page>
-                             <page string="Messages" name="messages">
-                            <group>
-                                <field name="auth_msg_no_response" />
-                                <field name="auth_msg_token_incorrect"/>
-                                <field name="auth_msg_token_expired" />
-                                 <field name="invoice_msg_api_status_check" />
-                            </group>
-                        </page>
+                            <page string="Messages" name="messages">
+                                <group>
+                                    <field name="auth_msg_no_response"/>
+                                    <field name="auth_msg_token_incorrect"/>
+                                    <field name="auth_msg_token_expired"/>
+                                    <field name="invoice_msg_api_status_check"/>
+                                    <field name="def_tax_group_msg_constraint"/>
+                                    <field name="def_tax_group_msg_check"/>
+                                    <field name="invoice_line_tax_check"/>
+                                </group>
+                            </page>
                         </notebook>
 
                     </sheet>

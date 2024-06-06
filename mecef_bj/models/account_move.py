@@ -32,7 +32,35 @@ from odoo.exceptions import ValidationError
 class AccountTaxGroup(models.Model):
     _inherit = 'account.tax.group'
 
-    tax_group_code = fields.Char(string=" Code", size=4)
+    emecef_tax_group = fields.Char(
+        help="eMCF taxation group, can be either A, B, C, D, E, F",
+        string="eMCF Tax Group", size=4)
+    is_emecef_default_tax_group = fields.Boolean(
+        help="Specify if this taxation group is default tax group",
+        string="eMCF Default Group?")
+
+    @api.model
+    def create(self, vals):
+        # OVERRIDE
+        rslt = super(AccountTaxGroup, self).create(vals)
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+        unique_default_tax_group = self.env['account.tax.group'].search([('is_emecef_default_tax_group', '=', True)])
+        if len(unique_default_tax_group) > 1:
+            error_msg = f"{api.def_tax_group_msg_constraint}"
+            raise ValidationError(_('%s' % error_msg))
+
+        return rslt
+
+    def write(self, vals):
+        # OVERRIDE
+        rslt = super(AccountTaxGroup, self).write(vals)
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+        unique_default_tax_group = self.env['account.tax.group'].search([('is_emecef_default_tax_group', '=', True)])
+        if len(unique_default_tax_group) > 1:
+            error_msg = f"{api.def_tax_group_msg_constraint}"
+            raise ValidationError(_('%s' % error_msg))
+
+        return rslt
 
 
 class AccountMove(models.Model):
@@ -43,7 +71,7 @@ class AccountMove(models.Model):
     emecef_date_time = fields.Char('MECeF Time', size=30, readonly=True, copy=False)
     emecef_date = fields.Date('MECeF Date', compute='_compute_emecef_date', copy=False)
     emecef_nim = fields.Char('MECeF NIM', size=12, readonly=True, copy=False)
-    emecef_product_count = fields.Char(string="Product Count", readonly=True,  copy=False)
+    emecef_product_count = fields.Char(string="Product Count", readonly=True, copy=False)
     emecef_qrcode = fields.Binary(string="MECeF QR Code", readonly=True, copy=False)
     emecef_flag = fields.Boolean('MECeF Status', copy=False)
     emecef_ref = fields.Char('MECeF Reference', readonly=True, copy=False)
@@ -84,6 +112,33 @@ class AccountMove(models.Model):
     #         return price_total * (record["discount"] / 100)
     #     return price_total
 
+    def _get_item_tax_group(self, invoice_line):
+
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+
+        # Step 1: if no tax is selected on invoice, Default Tax Group will be passed on to the line item
+        # or a validation error will be thrown to prompt user to a set Default Tax Group.
+        tax_group = False
+        if not invoice_line.tax_ids:
+            default_tax_group_id = self.env['account.tax.group'].search(
+                [('is_emecef_default_tax_group', '=', True)])
+            if not default_tax_group_id:
+                error_msg = f"{api.def_tax_group_msg_check}"
+                raise ValidationError(_('%s' % error_msg))
+            tax_group = default_tax_group_id.emecef_tax_group
+
+        # Step 2: if only one tax is set on the line, tax group will be the Tax Group of line item tax ID.
+        # If more than one tax id is set, a validation error will be thrown to prompt user to set only ONE tax id.
+        else:
+            if len(invoice_line.tax_ids) == 1:
+                tax_group = invoice_line.tax_ids[0].tax_group_id.emecef_tax_group
+
+            elif len(invoice_line.tax_ids) > 1:
+                error_msg = f"{api.invoice_line_tax_check}"
+                raise ValidationError(_('%s' % error_msg + str(invoice_line.name)))
+
+        return tax_group
+
     def _get_out_refund_mecef_data(self):
         for record in self:
             if record.move_type == 'out_refund':
@@ -93,7 +148,7 @@ class AccountMove(models.Model):
                 counters = refund_invoice.emecef_counters
                 # Step 1: Split counters in form of XXXX/XXXX FV by space and pick first item in list, then split by "/"
                 counters_split = (str(counters).split()[0]).split("/")
-                # Step 2: Split result of Step 1 in form of XXXX/XXXX and pick second item in list
+                # Step 2: Split result of Step 1 in form of XXXX/XXXX and then pick second item in list
                 counter = counters_split[1]
                 reference = str(nim) + "-" + str(counter)
                 return mecef_code, reference
@@ -113,7 +168,7 @@ class AccountMove(models.Model):
                     'name': line.name,
                     'price': line.price_total / line.quantity,
                     'quantity': line.quantity,
-                    'taxGroup': line.tax_ids[0].tax_group_id.tax_group_code,
+                    'taxGroup': self._get_item_tax_group(line),
                 })
 
             invoice_data = {
@@ -226,7 +281,6 @@ class AccountMove(models.Model):
         nim = confirmation_response_content.get("nim")
         codeMECeFDGI = confirmation_response_content.get("codeMECeFDGI")
         counters = confirmation_response_content.get("counters")
-        print(confirmation_response_content)
         self.write({
             "emecef_flag": True,
             "emecef_nim": nim,
