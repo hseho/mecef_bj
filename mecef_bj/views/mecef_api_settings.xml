@@ -46,7 +46,7 @@
                         <group>
                             <group>
                                 <field name="company_id" readonly="1"/>
-                                <field name="website"/>
+                                <field name="website" widget="url"/>
 
                             </group>
                             <group>
@@ -61,12 +61,12 @@
                                 <group string='Production API'>
                                     <group>
                                         <field name="invoice_api_endpoint" required="state == 'enabled'"
-                                        readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
+                                               readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
                                         <field name="information_api_endpoint" required="state == 'enabled'"
-                                         readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
+                                               readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
                                         <field name="api_token"
                                                required="state == 'enabled'"
-                                         readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
+                                               readonly="state in ('test', 'enabled') and token_status == 'valid'"/>
                                     </group>
                                     <group>
                                         <field name="nim_production"/>
@@ -127,9 +127,107 @@
                                     <field name="def_tax_group_msg_constraint"/>
                                     <field name="def_tax_group_msg_check"/>
                                     <field name="invoice_line_tax_check"/>
-                                     <field name="invoice_validation_error"/>
-                                     <field name="invoice_confirmation_no_uid"/>
+                                    <field name="invoice_validation_error"/>
+                                    <field name="invoice_confirmation_no_uid"/>
                                 </group>
+                            </page>
+                            <page name="module_instruction" string="Instructions">
+
+                                <group>
+                                    <p colspan="2">
+                                        <b>
+                                            CONFIGURATION INSTRUCTIONS
+                                        </b>
+                                    </p>
+                                    <p colspan="2">
+                                        <ul>
+                                            <li>
+                                                Under <b>Settings</b> tab while still in <b>Disable</b> state:
+                                            </li>
+                                            <br></br>
+
+                                            <li>
+                                                Configure the <b>INVOICE API</b>, <b>INFORMATION API</b> and <b>
+                                                API TOKEN
+                                            </b> for both PRODUCTION and TEST servers.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                <b>
+                                                    <span style="color:red">**** IT IS STRONGLY RECOMMENDED TO FIRST
+                                                        TEST THE TEST API SERVER ON A BACKUP DATABASE!****
+                                                    </span>
+                                                </b>
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                Click <b>Check Authorization</b> to check connection with the
+                                                Test API Server.
+                                                If test is successful, the following fields will be
+                                                automatically filled:
+                                                <b>Company IFU</b>, <b>NIM</b>, <b>Token Expires</b> and <b>
+                                                Token Status</b>.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                If
+                                                <b>Token Status =
+                                                    <span style="color:red">"Unathorized"</span>
+                                                </b>
+                                                , check the API settings
+                                                and run the check again.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                If
+                                                <b>Token Status =
+                                                    <span style="color:brown">"Expired"</span>
+                                                </b>
+                                                , Test API Token is expired.
+                                                User must generate
+                                                a new one from the API website, copy the new key and paste it into
+                                                the <b>
+                                                Test API Token
+                                            </b> field.
+                                                Once this is done, click on <b>Check Authorization</b> to run
+                                                the authorization.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                If
+                                                <b>Token Status =
+                                                    <span style="color:green">"Valid"</span>
+                                                </b>
+                                                , Test API configuration is OK.
+                                            </li>
+                                            <li>
+                                                Run the above steps for the <b>PRODUCTION API Server</b>.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                Click <b>Enable Testing</b> button to enable testing of the TEST API
+                                                server.
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                In the Invoice app, configure the taxes and the MECEF tax groups in
+                                                accordance with DGI.
+                                                Once this is complete, testing can begin.
+                                            </li>
+
+                                            <li>
+                                                When satisfied with test results, User can go in
+                                                <b>PRODUCTION</b>
+                                            </li>
+                                            <br></br>
+                                            <li>
+                                                Go to <b>PRODUCTION DATABASE</b> and click <b>Go Live</b> button to
+                                                enable the PRODUCTION API server.
+                                            </li>
+                                        </ul>
+                                    </p>
+                                </group>
+
                             </page>
                         </notebook>
 
