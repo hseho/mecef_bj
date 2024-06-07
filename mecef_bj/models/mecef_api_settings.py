@@ -107,9 +107,9 @@ class MECeFAPISettings(models.Model):
             "Invoice validation failed -- Error:"),
         translate=True)
 
-    invoice_validation_no_uid = fields.Char(
-        string="Invoice Validation Error",
-        help="The message displayed during invoice validation",
+    invoice_confirmation_no_uid = fields.Char(
+        string="Invoice confirmation Error",
+        help="The message displayed during invoice confirmation",
         default=lambda self: _(
             "Invoice validation failed -- Error: Empty 'uid'"),
         translate=True)

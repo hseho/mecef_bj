@@ -127,6 +127,8 @@
                                     <field name="def_tax_group_msg_constraint"/>
                                     <field name="def_tax_group_msg_check"/>
                                     <field name="invoice_line_tax_check"/>
+                                     <field name="invoice_validation_error"/>
+                                     <field name="invoice_confirmation_no_uid"/>
                                 </group>
                             </page>
                         </notebook>
