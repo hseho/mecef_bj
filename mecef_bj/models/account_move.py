@@ -253,29 +253,33 @@ class AccountMove(models.Model):
             return response.status_code, json.loads(response.content)
 
     def validate_invoice(self, invoice: dict):
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+
         validation_response_code, validation_response_content = self._send_request(
             data=invoice, method="POST"
         )
         if not validation_response_code == 200:
-            raise Exception(
-                f"Invoice validation failed -- Error: {validation_response_code} -- {validation_response_content}"
-            )
+            error_msg = f"{api.invoice_validation_error}"
+            raise ValidationError(_('%s' % error_msg + str(validation_response_code)))
+
         if not len(validation_response_content.get("uid")) > 0:
-            raise Exception(
-                f"Invoice validation failed -- Error: Empty 'uid' -- {validation_response_content}")
+            error_msg = f"{api.invoice_validation_no_uid}"
+            raise ValidationError(_('%s' % error_msg))
         invoice_uid = validation_response_content['uid']
 
         return invoice_uid
 
     def confirm_invoice_validation(self, invoice_uid, action="confirm"):
         # Finalize the invoice
+        api = self.env.ref('mecef_bj.mecef_api_settings')
+        
         confirmation_response_code, confirmation_response_content = self._send_request(
             method="PUT", uri=f"{invoice_uid}/{action}"
         )
         if not confirmation_response_code == 200:
-            raise Exception(
-                f"Invoice confirmation failed -- Error: {confirmation_response_code} -- {confirmation_response_content}"
-            )
+            error_msg = f"{api.invoice_validation_error}"
+            raise ValidationError(_('%s' % error_msg + str(confirmation_response_code)))
+
         confirmationDate = confirmation_response_content.get("dateTime")
         qrCode = confirmation_response_content.get("qrCode")
         nim = confirmation_response_content.get("nim")

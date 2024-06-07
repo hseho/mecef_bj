@@ -100,6 +100,20 @@ class MECeFAPISettings(models.Model):
             "You cannot set more than one tax id on invoice line:\n"),
         translate=True)
 
+    invoice_validation_error = fields.Char(
+        string="Invoice Validation Error",
+        help="The message displayed during invoice validation",
+        default=lambda self: _(
+            "Invoice validation failed -- Error:"),
+        translate=True)
+
+    invoice_validation_no_uid = fields.Char(
+        string="Invoice Validation Error",
+        help="The message displayed during invoice validation",
+        default=lambda self: _(
+            "Invoice validation failed -- Error: Empty 'uid'"),
+        translate=True)
+
     def action_test(self):
         if self.token_status_test == 'unauthorized':
             error_msg = f"{self.auth_msg_no_response}"
