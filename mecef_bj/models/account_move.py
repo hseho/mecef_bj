@@ -101,17 +101,6 @@ class AccountMove(models.Model):
         qr_img = base64.b64encode(temp.getvalue())
         return qr_img
 
-    # def _get_item_price_total(self, invoice_line, record, item_tax_type):
-    #     if item_tax_type != "SPEC" and tax_details["amount_type"] == "percent":
-    #         price_total = record["price_unit"] + (record["price_unit"] * (tax_details["amount"] / 100))
-    #     elif item_tax_type != "SPEC" and tax_details["amount_type"] == "fixed":
-    #         price_total = record["price_unit"] + tax_details["amount"]
-    #     else:
-    #         price_total = record["price_unit"]
-    #     if record["discount"] > 0:
-    #         return price_total * (record["discount"] / 100)
-    #     return price_total
-
     def _get_item_tax_group(self, invoice_line):
 
         api = self.env.ref('mecef_bj.mecef_api_settings')
@@ -272,7 +261,7 @@ class AccountMove(models.Model):
     def confirm_invoice_validation(self, invoice_uid, action="confirm"):
         # Finalize the invoice
         api = self.env.ref('mecef_bj.mecef_api_settings')
-        
+
         confirmation_response_code, confirmation_response_content = self._send_request(
             method="PUT", uri=f"{invoice_uid}/{action}"
         )
