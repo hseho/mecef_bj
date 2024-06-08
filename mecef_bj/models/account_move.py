@@ -120,6 +120,9 @@ class AccountMove(models.Model):
         # If more than one tax id is set, a validation error will be thrown to prompt user to set only ONE tax id.
         else:
             if len(invoice_line.tax_ids) == 1:
+                if not invoice_line.tax_ids[0].tax_group_id.emecef_tax_group:
+                    error_msg = f"{api.invoice_line_tax_group_check}"
+                    raise ValidationError(_('%s' % error_msg))
                 tax_group = invoice_line.tax_ids[0].tax_group_id.emecef_tax_group
 
             elif len(invoice_line.tax_ids) > 1:
@@ -178,7 +181,7 @@ class AccountMove(models.Model):
             if record.move_type == 'out_refund':
                 invoice_type = "FA"
                 invoice_data.update({'type': invoice_type, 'reference': self._get_out_refund_mecef_data()[0]})
-            print('invoice_data Code', invoice_data)
+
             return invoice_data
 
     def action_post(self):
@@ -247,7 +250,7 @@ class AccountMove(models.Model):
         validation_response_code, validation_response_content = self._send_request(
             data=invoice, method="POST"
         )
-        print('Validation Code', validation_response_code)
+
         if not validation_response_code == 200:
             error_msg = f"{api.invoice_validation_error}"
             raise ValidationError(_('%s' % error_msg + str(validation_response_code)))
