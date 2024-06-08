@@ -100,6 +100,13 @@ class MECeFAPISettings(models.Model):
             "You cannot set more than one tax id on invoice line:\n"),
         translate=True)
 
+    invoice_line_tax_group_check = fields.Char(
+        string="Invoice Line Tax Check",
+        help="The message displayed if tax id is set but no tax group on invoice line ",
+        default=lambda self: _(
+            "You cannot set more than one tax id on invoice line:\n"),
+        translate=True)
+
     invoice_validation_error = fields.Char(
         string="Invoice Validation Error",
         help="The message displayed during invoice validation",
