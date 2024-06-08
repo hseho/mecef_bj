@@ -202,12 +202,9 @@ class AccountMove(models.Model):
 
                     # Step 3: Obtain Invoice Data #
                     invoice_data = self._prepare_invoice_data()
-                    print('Invoice Data', invoice_data)
-                    raise ValidationError(_('%s' % invoice_data))
 
                     # Step 4: POST request to eMECeF API to obtain invoice uid.
                     invoice_uid = self.validate_invoice(invoice_data)
-
                     raise ValidationError(_('%s' % invoice_uid))
 
                     # Step 5: PUT a request to eMECeF API to get NIM, DGI_CODE, TC/TF, TIME and append on invoice
