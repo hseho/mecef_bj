@@ -178,7 +178,7 @@ class AccountMove(models.Model):
             if record.move_type == 'out_refund':
                 invoice_type = "FA"
                 invoice_data.update({'type': invoice_type, 'reference': self._get_out_refund_mecef_data()[0]})
-
+            print('invoice_data Code', invoice_data)
             return invoice_data
 
     def action_post(self):
@@ -247,6 +247,7 @@ class AccountMove(models.Model):
         validation_response_code, validation_response_content = self._send_request(
             data=invoice, method="POST"
         )
+        print('Validation Code', validation_response_code)
         if not validation_response_code == 200:
             error_msg = f"{api.invoice_validation_error}"
             raise ValidationError(_('%s' % error_msg + str(validation_response_code)))
@@ -254,6 +255,7 @@ class AccountMove(models.Model):
         if not len(validation_response_content.get("uid")) > 0:
             error_msg = f"{api.invoice_validation_no_uid}"
             raise ValidationError(_('%s' % error_msg))
+
         invoice_uid = validation_response_content['uid']
 
         return invoice_uid
