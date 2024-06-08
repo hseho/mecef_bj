@@ -267,17 +267,17 @@ class AccountMove(models.Model):
         # Finalize the invoice
         api = self.env.ref('mecef_bj.mecef_api_settings')
 
-        confirmation_response = self._send_request(method="PUT", uri=f"{invoice_uid}/{action}")
+        response_code, response_content = self._send_request(method="PUT", uri=f"{invoice_uid}/{action}")
 
-        if not confirmation_response == 200:
+        if not response_code == 200:
             error_msg = f"{api.invoice_validation_error}"
-            raise ValidationError(_('%s' % error_msg + ' ' + str(confirmation_response)))
+            raise ValidationError(_('%s' % error_msg + ' ' + str(response_code)))
 
-        invoice_date_time = confirmation_response.get("dateTime")
-        qr_code = confirmation_response.get("qrCode")
-        nim = confirmation_response.get("nim")
-        mecef_code = confirmation_response.get("codeMECeFDGI")
-        counters = confirmation_response.get("counters")
+        invoice_date_time = response_content.get("dateTime")
+        qr_code = response_content.get("qrCode")
+        nim = response_content.get("nim")
+        mecef_code = response_content.get('codeMECeFDGI')
+        counters = response_content.get("counters")
         self.write({
             "emecef_flag": True,
             "emecef_nim": nim,
