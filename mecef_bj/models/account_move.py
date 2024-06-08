@@ -122,12 +122,12 @@ class AccountMove(models.Model):
             if len(invoice_line.tax_ids) == 1:
                 if not invoice_line.tax_ids[0].tax_group_id.emecef_tax_group:
                     error_msg = f"{api.invoice_line_tax_group_check}"
-                    raise ValidationError(_('%s' % error_msg + str(invoice_line.name)))
+                    raise ValidationError(_('%s' % error_msg + ' ' + str(invoice_line.name)))
                 tax_group = invoice_line.tax_ids[0].tax_group_id.emecef_tax_group
 
             elif len(invoice_line.tax_ids) > 1:
                 error_msg = f"{api.invoice_line_tax_check}"
-                raise ValidationError(_('%s' % error_msg + str(invoice_line.name)))
+                raise ValidationError(_('%s' % error_msg + ' ' + str(invoice_line.name)))
 
         return tax_group
 
@@ -272,7 +272,7 @@ class AccountMove(models.Model):
         )
         if not confirmation_response_code == 200:
             error_msg = f"{api.invoice_validation_error}"
-            raise ValidationError(_('%s' % error_msg + str(confirmation_response_code)))
+            raise ValidationError(_('%s' % error_msg + ' ' + str(confirmation_response_code)))
 
         confirmationDate = confirmation_response_content.get("dateTime")
         qrCode = confirmation_response_content.get("qrCode")
