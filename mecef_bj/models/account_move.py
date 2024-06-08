@@ -267,25 +267,24 @@ class AccountMove(models.Model):
         # Finalize the invoice
         api = self.env.ref('mecef_bj.mecef_api_settings')
 
-        confirmation_response_code, confirmation_response_content = self._send_request(
-            method="PUT", uri=f"{invoice_uid}/{action}"
-        )
-        if not confirmation_response_code == 200:
-            error_msg = f"{api.invoice_validation_error}"
-            raise ValidationError(_('%s' % error_msg + ' ' + str(confirmation_response_code)))
+        confirmation_response = self._send_request(method="PUT", uri=f"{invoice_uid}/{action}")
 
-        confirmationDate = confirmation_response_content.get("dateTime")
-        qrCode = confirmation_response_content.get("qrCode")
-        nim = confirmation_response_content.get("nim")
-        codeMECeFDGI = confirmation_response_content.get("codeMECeFDGI")
-        counters = confirmation_response_content.get("counters")
+        if not confirmation_response == 200:
+            error_msg = f"{api.invoice_validation_error}"
+            raise ValidationError(_('%s' % error_msg + ' ' + str(confirmation_response)))
+
+        invoice_date_time = confirmation_response.get("dateTime")
+        qr_code = confirmation_response.get("qrCode")
+        nim = confirmation_response.get("nim")
+        mecef_code = confirmation_response.get("codeMECeFDGI")
+        counters = confirmation_response.get("counters")
         self.write({
             "emecef_flag": True,
             "emecef_nim": nim,
             "emecef_counters": counters,
-            "emecef_code": codeMECeFDGI,
-            "emecef_date_time": confirmationDate,
-            "emecef_qrcode": self._generate_qr_code(qrCode),
+            "emecef_code": mecef_code,
+            "emecef_date_time": invoice_date_time,
+            "emecef_qrcode": self._generate_qr_code(qr_code),
             "emecef_product_count": len(self.invoice_line_ids),
             "emecef_ref": self._get_out_refund_mecef_data()[1] if self.reversed_entry_id else False
         })
