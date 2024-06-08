@@ -101,7 +101,7 @@ class MECeFAPISettings(models.Model):
         translate=True)
 
     invoice_line_tax_group_check = fields.Char(
-        string="Invoice Line Tax Check",
+        string="Invoice Tax Group Check",
         help="The message displayed if tax id is set but no tax group on invoice line ",
         default=lambda self: _(
             "No Tax Group is configured for Tax id on invoice line:\n"),
