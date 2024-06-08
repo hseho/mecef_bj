@@ -34,7 +34,7 @@ class AccountTaxGroup(models.Model):
 
     emecef_tax_group = fields.Char(
         help="eMCF taxation group, can be either A, B, C, D, E, F",
-        string="eMCF Tax Group", size=4)
+        string="eMCF Tax Group", size=4, required=True)
     is_emecef_default_tax_group = fields.Boolean(
         help="Specify if this taxation group is default tax group",
         string="eMCF Default Group?")
@@ -122,7 +122,7 @@ class AccountMove(models.Model):
             if len(invoice_line.tax_ids) == 1:
                 if not invoice_line.tax_ids[0].tax_group_id.emecef_tax_group:
                     error_msg = f"{api.invoice_line_tax_group_check}"
-                    raise ValidationError(_('%s' % error_msg))
+                    raise ValidationError(_('%s' % error_msg + str(invoice_line.name)))
                 tax_group = invoice_line.tax_ids[0].tax_group_id.emecef_tax_group
 
             elif len(invoice_line.tax_ids) > 1:
