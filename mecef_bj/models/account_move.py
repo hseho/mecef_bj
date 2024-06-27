@@ -201,7 +201,7 @@ class AccountMove(models.Model):
 
                 rslt = super(AccountMove, self).action_post()
 
-                if not self.emecef_flag:  # Exclude invoice if it had been processed before
+                if not self.emecef_flag:  # Check invoice if it had been processed before
 
                     # Step 3: Obtain Invoice Data #
                     invoice_data = self._prepare_invoice_data()
@@ -212,12 +212,13 @@ class AccountMove(models.Model):
                     # Step 5: PUT a request to eMECeF API to get NIM, DGI_CODE, TC/TF, TIME and append on invoice
                     self.confirm_invoice_validation(invoice_uid)
 
-                else:
+                else:  # Exclude invoice if it had been processed before
                     pass
                 return rslt
-            else:
-                error_msg = f"{api.invoice_msg_api_status_check}"
-                raise ValidationError(_('%s' % error_msg))
+            elif api.state == 'disabled':
+                return super(AccountMove, self).action_post()
+                # error_msg = f"{api.invoice_msg_api_status_check}"
+                # raise ValidationError(_('%s' % error_msg))
 
     def _send_request(self, data: dict = None, uri: str = "", method: str = "GET"):
 

@@ -139,7 +139,7 @@ class MECeFAPISettings(models.Model):
         elif self.token_status == 'expired':
             error_msg = f"{self.auth_msg_token_expired}"
             raise ValidationError(_('%s' % error_msg))
-        self.state = 'enable'
+        self.state = 'enabled'
         return True
 
     def action_disable(self):
