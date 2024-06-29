@@ -157,7 +157,7 @@ class AccountMove(models.Model):
             items = []
             for line in record.invoice_line_ids:
                 items.append({
-                    'name': line.name,
+                    'name': line.name if len(line.name) <= 80 else line.product_id.name,
                     'price': line.price_total / line.quantity,
                     'quantity': line.quantity,
                     'taxGroup': self._get_item_tax_group(line),
